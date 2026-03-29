@@ -33,7 +33,7 @@ class MenuGauche(tk.Frame):
         entete.pack(pady=10)
 
         
-        image_maison = Image.open("cleimg/maison.png")
+        image_maison = Image.open("img/maison.png")
         image_maison = image_maison.resize((25, 25))
         self.icone = ImageTk.PhotoImage(image_maison)
 
