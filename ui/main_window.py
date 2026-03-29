@@ -2,7 +2,7 @@ from tkinter import *
 from ui.components.menu import Menu
 from config import ColorConfig
 from ui.frames.dashboard_frame import Dashboard
-
+from ui.frames.room_manager_frame import RoomManager
 
 class MainWindow:
     def __init__(self, root_):
@@ -14,8 +14,8 @@ class MainWindow:
         self.root.configure(bg=col.primary_white)
 
         self.root.grid_columnconfigure(0, weight=1)
-        self.root.grid_columnconfigure(1, weight=3)
+        self.root.grid_columnconfigure(1, weight=5)
         self.root.grid_rowconfigure(0, weight=1)
 
         self.menu_frame = Menu(root_)
-        self.dashboard_frame = Dashboard(root_)
+        self.main_frame = Dashboard(root_)

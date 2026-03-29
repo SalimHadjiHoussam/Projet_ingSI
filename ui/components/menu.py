@@ -18,7 +18,13 @@ class Menu:
         self.home_wrapper = Frame(self.menu_frame, bg=col.neutral_white)
         self.home_wrapper.pack(anchor="w", fill="x")
 
-        self.home_icon = Label(self.home_wrapper, image=image, bg=col.neutral_white)
+        self.home_icon = Label(
+            self.home_wrapper,
+            image=image,
+            bg=col.neutral_white,
+            borderwidth=3,
+            relief='solid'
+        )
         self.home_icon.image = image
         self.home_icon.grid(row=0, column=0)
 

@@ -1,5 +1,5 @@
 from tkinter import *
-from config import ColorConfig
+from config import ColorConfig, FontFamilyConfig
 from ui.components.menu import Menu
 
 class Dashboard(Menu):
@@ -7,17 +7,14 @@ class Dashboard(Menu):
         super().__init__(root_)
         self.root = root_
         self.col = ColorConfig()
+        self.ff = FontFamilyConfig(self.root)
 
-        # Création des parties
-        self.dashboard_menu()
-        self.dashboard_main()
-
-    def dashboard_menu(self):
+        self.main()
 
         houses = ["Maison 01", "Maison 02", "Maison 03", "Maison 04"]
 
         for i, house in enumerate(houses):
-            color = "#f4c542" if i == 0 else "#d9d9d9"
+            color = self.col.primary_white if i != 0 else self.col.primary_yellow
 
             btn = Button(
                 self.menu_wrapper,
@@ -27,14 +24,14 @@ class Dashboard(Menu):
             )
             btn.pack(fill="x", pady=8)
 
-    def dashboard_main(self):
+    def main(self):
         content = Frame(self.root, bg=self.col.primary_white, padx=32)
         content.grid(row=0, column=1, sticky="nsew")
 
         title = Label(
             content,
             text="Tableau de bord - État de la maison",
-            font=("Arial", 16, "bold"),
+            font=(self.ff.text_title, 20, "bold", "underline"),
             bg=self.col.primary_white
         )
         title.pack(pady=20)
@@ -42,10 +39,10 @@ class Dashboard(Menu):
         title1 = Label(
             content,
             text="Récapitulatif de toutes les pièces",
-            font=("Arial", 10),
-            bg="#14E3C7"
+            font=(self.ff.text_title, 16, "bold"),
+            pady=16, bg=self.col.primary_white
         )
-        title1.pack(pady=5)
+        title1.pack()
 
         # Frame du tableau
         table = Frame(content, bg=self.col.primary_white)
@@ -68,19 +65,19 @@ class Dashboard(Menu):
         # Couleurs
         def get_color(text):
             if "ALLUMEES" in text:
-                return "green"
+                return self.col.primary_green
             elif "ETEINTS" in text:
-                return "red"
-            return "black"
+                return self.col.primary_red
+            return self.col.neutral_black
 
         # Entêtes
         headers = ["Pièces", "Éclairage", "Température"]
         for col, h in enumerate(headers):
             lbl = Label(
-                table,
-                text=h,
-                font=("Arial", 10, "bold"),
-                bg="#c0c4ff", borderwidth=1
+                table, text=h,
+                font=(self.ff.text_normal, 12, "bold"),
+                bg="#99acff", borderwidth=1,
+                padx=12, pady=12, fg=self.col.neutral_white
             )
             lbl.grid(row=0, column=col, sticky="nsew")
 
@@ -89,21 +86,23 @@ class Dashboard(Menu):
             Label(
                 table,
                 text=row["piece"],
-                bg="#0cd0cd",
-                borderwidth=1
+                bg="#cdd6ff",
+                borderwidth=1, pady=8, padx=8,
+                font=(self.col.neutral_black, 12)
             ).grid(row=row_index, column=0, sticky="nsew")
 
             Label(
                 table,
                 text=row["eclairage"],
-                bg="#13eee0",
+                bg="#e3e8ff",
                 fg=get_color(row["eclairage"]),
-                borderwidth=1
+                borderwidth=1, pady=8, padx=8,
+                font=(self.ff.text_normal, 12, "bold")
             ).grid(row=row_index, column=1, sticky="nsew")
 
             Label(
                 table,
-                text=row["temperature"],
-                bg="#1be3ea",
-                borderwidth=1
+                text=row["temperature"], bg="#e3e8ff",
+                borderwidth=1, pady=8, padx=8,
+                font=(self.ff.text_normal, 12, "bold")
             ).grid(row=row_index, column=2, sticky="nsew")
