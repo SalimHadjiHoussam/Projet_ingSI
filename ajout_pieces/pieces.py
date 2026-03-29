@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from PIL import Image, ImageTk
 
 class Ajouter_pieces(tk.Tk):
@@ -45,11 +46,17 @@ class MenuGauche(tk.Frame):
         titre.pack(side="left")
 
         
+        
+        label_menu = tk.Label(self, text="Choisir une pièce", bg="#e6e6e6")
+        label_menu.pack(pady=(10, 5))
+
         liste_menu = ["CUISINE", "SALON", "CHAMBRE", "SALLE DE BAIN", "TOILETTES"]
 
-        for element in liste_menu:
-            bouton = tk.Button(self, text=element, width=20, relief="solid")
-            bouton.pack(pady=3)
+        self.menu_deroulant = ttk.Combobox(self, values=liste_menu, state="readonly")
+        self.menu_deroulant.pack(pady=5)
+
+        # Valeur par défaut
+        self.menu_deroulant.set("CUISINE")
 
         
         label_nom = tk.Label(self, text="Nom de la pièce", bg="#e6e6e6")
