@@ -1,2 +1,2 @@
-tkinter
-pip install pillow
+pillow
+pyglet
