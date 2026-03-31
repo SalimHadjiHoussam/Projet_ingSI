@@ -1,3 +1,15 @@
-pillow
-pyglet
-customtkinter
+# DomoHouse System - Requirements
+# Python 3.8+
+
+# Interface graphique
+pillow>=10.0.0
+Pillow>=10.0.0
+
+# Gestion des polices et fonts
+pyglet>=2.0.0
+
+# Widgets personnalisés Tkinter
+customtkinter>=5.0.0
+
+# Base de données (inclus dans Python standard)
+# sqlite3

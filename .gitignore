@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
 
 # Virtual environments
 .venv/
@@ -10,8 +12,21 @@ venv/
 env/
 ENV/
 
+# Database
+*.db
+domohouse.db
+
 # IDE
 .idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
 
 # Distribution / packaging
 *.egg-info/

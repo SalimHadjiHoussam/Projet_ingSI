@@ -3,28 +3,33 @@ from PIL import Image, ImageTk
 from config import ColorConfig, FontFamilyConfig
 
 class House(Frame):
-    def __init__(self, root_, nom_maison):
+    def __init__(self, root_, nom_maison, command=None):
         self.col = ColorConfig()
         self.ff = FontFamilyConfig(root_)
-        super().__init__(root_, bg=self.col.primary_white)
+        super().__init__(root_, bg=self.col.primary_white, cursor="hand2")
         super().grid(padx=(0, 48), pady=(0, 48))
 
         image = Image.open('assets/images/image_house.png')
         image = image.resize((100, 100))
         self.image = ImageTk.PhotoImage(image)
 
-        label_image = Label(self, image=self.image, bg=self.col.primary_white)
-        label_image.pack()
+        self.label_image = Label(self, image=self.image, bg=self.col.primary_white, cursor="hand2")
+        self.label_image.pack()
 
-        label_nom = Label(self, text=nom_maison, bg=self.col.primary_white, font=(self.ff.text_normal, 12, 'bold'))
-        label_nom.pack(pady=8)
+        self.label_nom = Label(self, text=nom_maison, bg=self.col.primary_white, fg=self.col.primary_black, font=(self.ff.text_normal, 12, 'bold'), cursor="hand2")
+        self.label_nom.pack(pady=8)
+
+        if command:
+            self.bind("<Button-1>", lambda e: command())
+            self.label_image.bind("<Button-1>", lambda e: command())
+            self.label_nom.bind("<Button-1>", lambda e: command())
 
 
 class Room(Frame):
-    def __init__(self, root_, nom_piece, room_):
+    def __init__(self, root_, nom_piece, room_, command=None):
         self.col = ColorConfig()
         self.ff = FontFamilyConfig(root_)
-        super().__init__(root_, bg=self.col.primary_white)
+        super().__init__(root_, bg=self.col.primary_white, cursor="hand2")
         super().grid(padx=(0, 48), pady=(0, 32))
 
         IMAGE_ROOM = {
@@ -38,21 +43,26 @@ class Room(Frame):
         image = image.resize((150, 150))
         self.image = ImageTk.PhotoImage(image)
 
-        label_image = Label(self, image=self.image, bg=self.col.primary_white)
-        label_image.pack()
+        self.label_image = Label(self, image=self.image, bg=self.col.primary_white, cursor="hand2")
+        self.label_image.pack()
 
-        label_nom = Label(self, text=nom_piece, bg=self.col.primary_white, font=(self.ff.text_normal, 12, 'bold'))
-        label_nom.pack(pady=8)
+        self.label_nom = Label(self, text=nom_piece, bg=self.col.primary_white, fg=self.col.primary_black, font=(self.ff.text_normal, 12, 'bold'), cursor="hand2")
+        self.label_nom.pack(pady=8)
+
+        if command:
+            self.bind("<Button-1>", lambda e: command())
+            self.label_image.bind("<Button-1>", lambda e: command())
+            self.label_nom.bind("<Button-1>", lambda e: command())
 
 
 class Heat:
-    def __init__(self, root_):
+    def __init__(self, root_, initial_temp=18, command=None, delete_command=None):
         self.root = root_
         self.col = ColorConfig()
         self.ff = FontFamilyConfig(self.root)
 
         self.container = Frame(self.root, bg=self.col.neutral_white)
-        self.container.pack(ipadx=16, ipady=16, padx=16)
+        self.container.pack(ipadx=16, ipady=16, padx=16, fill='x')
 
         url = Image.open("assets/icons/icon_heat.png").resize((64, 64))
         heat_image = ImageTk.PhotoImage(image=url)
@@ -65,52 +75,67 @@ class Heat:
             self.container,
             from_=10, to=30,
             orient='horizontal',
-            length=550, tickinterval=5,
+            length=400, tickinterval=5,
             bg=self.col.neutral_white,
+            fg=self.col.primary_black,
             troughcolor=self.col.primary_blue,
-            relief='flat', bd=0
+            relief='flat', bd=0,
+            command=lambda val: command(int(val)) if command else None
         )
-        self.range.pack(side='left', fill='x')
+        self.range.set(initial_temp)
+        self.range.pack(side='left', fill='x', expand=True)
 
         self.del_button = Button(
             self.container,
             text="Supprimer",
             bg=self.col.primary_red,
-            font=(self.ff.text_normal, 6, "bold")
+            fg=self.col.neutral_black,
+            font=(self.ff.text_normal, 8, "bold"),
+            command=delete_command,
+            relief="flat",
+            borderwidth=0
         )
-        self.del_button.pack(side='left', fill='x', padx=(24, 0))
+        self.del_button.pack(side='left', padx=(24, 0))
 
 
 class Light:
-    def __init__(self, root_, active_ :bool=False, row=None, column=None, columnspan=None, rowspan=None):
+    def __init__(self, root_, active_=False, row=None, column=None, command=None, delete_command=None):
         self.root = root_
         self.col = ColorConfig()
         self.ff = FontFamilyConfig(self.root)
 
         self.container = Frame(self.root, width=200, height=100, bg=self.col.neutral_white, padx=16, pady=16)
-        self.container.grid(padx=(0, 16), pady=(0, 16), row=row, column=column, rowspan=rowspan, columnspan=columnspan)
-
+        self.container.grid(padx=(0, 16), pady=(0, 16), row=row, column=column)
 
         # Lamp layout
-        url_inactive, url_active = Image.open("assets/icons/icon_lamp_inactive.png"), Image.open(
-            "assets/icons/icon_lamp_active.png")
-        url_inactive, url_active = url_inactive.resize((64, 64)), url_active.resize((64, 64))
+        theme = self.col.get_theme()
+        url_inactive_path = f"assets/icons/icon_lamp_inactive_{theme}.png"
+        url_inactive = Image.open(url_inactive_path).resize((64, 64))
+        url_active = Image.open("assets/icons/icon_lamp_active.png").resize((64, 64))
 
-        lamp_active = ImageTk.PhotoImage(image=url_active)
-        lamp_inactive = ImageTk.PhotoImage(image=url_inactive)
+        self.lamp_active = ImageTk.PhotoImage(image=url_active)
+        self.lamp_inactive = ImageTk.PhotoImage(image=url_inactive)
 
-        self.lamp = Label(self.container, image=lamp_active if active_ else lamp_inactive, bg=self.col.neutral_white)
-        self.lamp.image = lamp_active if active_ else lamp_inactive
+        self.lamp = Label(self.container, image=self.lamp_active if active_ else self.lamp_inactive, bg=self.col.neutral_white)
         self.lamp.grid(row=0, rowspan=2, column=0, sticky='nsew')
 
-        self.switcher = ToggleSwitch(self.container, initial_state=active_)
+        def on_toggle(state):
+            self.lamp.config(image=self.lamp_active if state else self.lamp_inactive)
+            if command:
+                command(state)
+
+        self.switcher = ToggleSwitch(self.container, initial_state=active_, command=on_toggle)
         self.switcher.grid(row=0, column=1, padx=(24, 0))
 
         self.del_button = Button(
             self.container,
             text="Supprimer",
             bg=self.col.primary_red,
-            font=(self.ff.text_normal, 6, "bold")
+            fg=self.col.neutral_black,
+            font=(self.ff.text_normal, 8, "bold"),
+            command=delete_command,
+            relief="flat",
+            borderwidth=0
         )
         self.del_button.grid(row=1, column=1, padx=(24, 0))
 
@@ -144,6 +169,10 @@ class ToggleSwitch(Frame):
             command=self.toggle
         )
         self.button.pack()
+
+    def update_colors(self):
+        col = ColorConfig()
+        self.button.config(activebackground=col.neutral_white, bg=col.neutral_white)
 
     def toggle(self):
         self.is_on = not self.is_on

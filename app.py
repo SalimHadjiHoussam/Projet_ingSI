@@ -1,3 +1,6 @@
+"""
+Application principale DomoHouse System.
+"""
 from tkinter import *
 from ui.main_window import MainWindow
 
