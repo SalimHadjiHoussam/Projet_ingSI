@@ -1,3 +1,5 @@
+from PIL import Image, ImageTk
+
 from ui.frames.manager_frame import HousesManager, HouseManager, RoomManager
 from ui.frames.dashboard_frame import Dashboard
 from ui.frames.home_frame import Home
@@ -12,6 +14,12 @@ class MainWindow:
         self.root.title("DomoHouse System")
         self.root.geometry("1024x600")
         self.root.configure(bg=col.primary_white)
+
+        image_maison = Image.open("assets/icons/favicon.png")
+        image_maison = image_maison.resize((25, 25))
+        self.icone = ImageTk.PhotoImage(image_maison)
+        self.root.iconphoto(False, self.icone)
+
 
         # Historique de navigation
         self.history = []
